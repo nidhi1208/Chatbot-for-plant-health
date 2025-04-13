@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>PlantPal AI - Nurture Your Plants</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(-45deg, #a1ffce, #faffd1, #d4fc79, #96e6a1);
+        background-size: 400% 400%;
+        animation: gradientBackground 12s ease infinite;
+      }
+
+      @keyframes gradientBackground {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .main-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        height: 100vh;
+        padding: 0 5%;
+        gap: 20px;
+      }
+
+      @keyframes rotateTree {
+        0% {
+          transform: rotateX(-20deg) rotateY(0deg);
+        }
+        100% {
+          transform: rotateX(-20deg) rotateY(360deg);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .tree-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: fadeInUp 1s ease forwards;
+      }
+
+      .tree {
+        position: relative;
+        width: 250px;
+        height: 250px;
+        transform-style: preserve-3d;
+        animation: rotateTree 10s linear infinite;
+      }
+
+      .tree div {
+        position: absolute;
+        top: -150px;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform-style: preserve-3d;
+        transform: translateY(calc(100px * var(--x))) translateZ(0px);
+      }
+
+      .tree div.branch span {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, #69c069, #77dd77);
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        border-bottom: 5px solid #00000019;
+        transform-origin: bottom;
+        transform: rotateY(calc(90deg * var(--i))) rotateX(30deg) translateZ(80px);
+      }
+
+      .tree div.stem span {
+        position: absolute;
+        top: 300px;
+        left: calc(50% - 15px);
+        width: 30px;
+        height: 100%;
+        background: linear-gradient(90deg, #bb4622, #df7214);
+        border-bottom: 5px solid #00000019;
+        transform-origin: bottom;
+        transform: rotateY(calc(90deg * var(--i))) translateZ(15px);
+      }
+
+      .chatbox {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+        text-align: center;
+        animation: slideInLeft 1s ease forwards;
+      }
+
+      .chatbox textarea {
+        width: 100%;
+        height: 100px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+
+      .chatbox button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+      }
+
+      .chatbox button:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+      }
+
+      .typing-indicator {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        margin-top: 10px;
+        display: none;
+      }
+
+      .typing-indicator span {
+        width: 6px;
+        height: 6px;
+        background: #3b82f6;
+        border-radius: 50%;
+        animation: bounce 1s infinite ease-in-out alternate;
+      }
+
+      .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes bounce {
+        to {
+          transform: translateY(-6px);
+          opacity: 0.6;
+        }
+      }
+
+      .chatbox h2 {
+        text-align: center;
+        font-weight: bold;
+        margin: 0;
+        padding-top: 20px;
+        font-size: 3rem;
+        color: #38b2ac;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      .chatbox label {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #2d3748;
+        margin-bottom: 10px;
+        text-align: center;
+        font-family: 'Inter', sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- HEADER -->
+    <header class="flex justify-between items-center px-10 py-6 bg-white/80 shadow">
+      <div class="flex items-center gap-2">
+        <div class="text-2xl font-bold text-green-600">🌿</div>
+        <span class="text-xl font-semibold text-gray-800">PlantPal AI</span>
+      </div>
+      <nav class="hidden md:flex items-center space-x-8 text-gray-700 font-medium">
+        <a href="#">Home</a>
+        <a href="#">Info</a>
+       
+      </nav>
+      <div class="flex items-center space-x-4">
+        <a href="#" class="text-gray-600">Login</a>
+        <a href="#" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium">Download</a>
+        <a href="#" class="text-gray-600 text-xl">👤</a>
+      </div>
+    </header>
+
+    <section class="main-section">
+      <!-- Left Column: Chatbox -->
+      <div class="chatbox">
+        <h2>
+          Every plant has a story. Let us help you nurture it to life.
+        </h2>
+        <label>Ask the Plant Health AI:</label>
+        <textarea id="plantInput" placeholder="e.g. My plant has yellow leaves and weak stems. What should I do?"></textarea>
+        <button id="sendBtn" type="button">Send</button>
+        <div class="typing-indicator" id="typing-indicator">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+      <!-- Right Column: Tree -->
+      <div class="tree-container">
+        <div class="tree">
+          <div class="branch" style="--x:0">
+            <span style="--i:0;"></span><span style="--i:1;"></span><span style="--i:2;"></span><span style="--i:3;"></span>
+          </div>
+          <div class="branch" style="--x:1">
+            <span style="--i:0;"></span><span style="--i:1;"></span><span style="--i:2;"></span><span style="--i:3;"></span>
+          </div>
+          <div class="branch" style="--x:2">
+            <span style="--i:0;"></span><span style="--i:1;"></span><span style="--i:2;"></span><span style="--i:3;"></span>
+          </div>
+          <div class="branch" style="--x:3">
+            <span style="--i:0;"></span><span style="--i:1;"></span><span style="--i:2;"></span><span style="--i:3;"></span>
+          </div>
+          <div class="stem">
+            <span style="--i:0;"></span><span style="--i:1;"></span><span style="--i:2;"></span><span style="--i:3;"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </body>
+</html>
+
+<script>
+  const fallbackMessages = [
+    `🌿 **Light & Placement**
+Most houseplants prefer bright, indirect sunlight. Place them near windows with filtered light. Avoid direct harsh sunlight, which can scorch leaves. Rotate your plants periodically to ensure even growth on all sides.`,
+
+    `💧 **Watering Wisely**
+Water your plants when the top inch of soil feels dry. Use room-temperature water and ensure pots have proper drainage to prevent root rot. Overwatering is a common issue; it's better to underwater slightly than to overwater.`,
+
+    `🌬️ **Humidity & Airflow**
+Many indoor plants thrive in moderate humidity. Increase humidity by misting leaves, placing a tray of water near plants, or using a humidifier. Ensure good airflow around plants to prevent fungal diseases.`,
+
+    `🌱 **Soil & Fertilization**
+Use well-draining, nutrient-rich soil appropriate for your plant species. Fertilize during the growing season (spring and summer) with a balanced, water-soluble fertilizer. Reduce feeding in fall and winter when growth slows.`,
+
+    `✂️ **Pruning & Maintenance**
+Regularly remove dead or yellowing leaves to promote healthy growth. Prune leggy stems to encourage bushier development. Keep an eye out for pests like aphids or spider mites and treat infestations promptly.`
+  ];
+
+  let fallbackIndex = 0;
+
+  document.getElementById("sendBtn").addEventListener("click", () => {
+    const message = document.getElementById("plantInput").value;
+
+    fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data); // 👈 See the full response
+        displayResponse(`🌿 PlantPal AI: ${data.reply}`);
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        // Show one of the fallback messages alternatively
+        const fallbackMessage = fallbackMessages[fallbackIndex];
+        fallbackIndex = (fallbackIndex + 1) % fallbackMessages.length; // Cycle through the messages
+        displayResponse(fallbackMessage);
+      });
+  });
+
+  function displayResponse(response) {
+    const responseContainer = document.createElement("div");
+    responseContainer.innerHTML = response;
+    responseContainer.style.marginTop = "10px";
+    responseContainer.style.padding = "10px";
+    responseContainer.style.border = "1px solid #ccc";
+    responseContainer.style.borderRadius = "5px";
+    responseContainer.style.backgroundColor = "#f9f9f9";
+    responseContainer.style.color = "#333";
+    document.querySelector(".chatbox").appendChild(responseContainer);
+  }
+</script>
+
+</body>
+</html>
